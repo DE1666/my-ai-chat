@@ -22,12 +22,11 @@
       <h1 class="font-bold text-base text-slate-100">Nexus AI</h1>
     </div>
     <div class="flex items-center gap-2">
-      <select id="model-select" class="bg-slate-950 border border-slate-700 text-slate-200 text-xs rounded-lg px-2 py-1 outline-none">
-        <option value="llama-3.1-8b-instant" selected>Llama 3.1 8B</option>
-        <option value="llama-3.3-70b-versatile">Llama 3.3 70B</option>
+      <select id="model-select" class="bg-slate-950 border border-slate-700 text-slate-200 text-xs rounded-lg px-2 py-1 outline-none max-w-[150px]">
+        <option value="">جاري جلب النماذج...</option>
       </select>
-      <button onclick="changeKey()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded-lg border border-slate-700">
-        <i class="fa-solid fa-key"></i>
+      <button onclick="changeKey()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1.5 rounded-lg border border-slate-700">
+        <i class="fa-solid fa-key"></i> المفتاح
       </button>
     </div>
   </header>
@@ -38,7 +37,7 @@
       <div class="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center flex-shrink-0 text-xs">
         <i class="fa-solid fa-robot"></i>
       </div>
-      <p class="text-xs text-slate-300 leading-relaxed">أهلاً بك! أدخلي مفتاح Groq الخاص بك عند الطلب لتشغيل الشات بشكل دائم وأمن.</p>
+      <p class="text-xs text-slate-300 leading-relaxed">أهلاً بك! يتم سحب قائمة النماذج الفعالة بحسابك تلقائياً.</p>
     </div>
   </main>
 
@@ -58,9 +57,9 @@
       if (!key) {
         key = prompt("يرجى إدخال مفتاح Groq API الخاص بك (يبدأ بـ gsk_):");
         if (key && key.trim().startsWith("gsk_")) {
-          localStorage.setItem("user_groq_key", key.trim());
+          key = key.trim();
+          localStorage.setItem("user_groq_key", key);
         } else {
-          alert("المفتاح غير صحيح!");
           return null;
         }
       }
@@ -71,9 +70,46 @@
       const key = prompt("أدخلي مفتاح Groq API الجديد:");
       if (key && key.trim().startsWith("gsk_")) {
         localStorage.setItem("user_groq_key", key.trim());
-        alert("تم تحديث المفتاح بنجاح!");
+        alert("تم حفظ المفتاح! جاري إعادت التحميل...");
+        fetchModels();
       }
     }
+
+    async function fetchModels() {
+      const apiKey = getApiKey();
+      if (!apiKey) return;
+
+      const select = document.getElementById("model-select");
+      try {
+        const res = await fetch("https://api.groq.com/openai/v1/models", {
+          headers: { "Authorization": "Bearer " + apiKey }
+        });
+        const data = await res.json();
+        
+        if (data.data && data.data.length > 0) {
+          select.innerHTML = "";
+          // فلترة نماذج النص وتنسيق القائمة
+          data.data.forEach(m => {
+            if (!m.id.includes("whisper") && !m.id.includes("guard")) {
+              const opt = document.createElement("option");
+              opt.value = m.id;
+              opt.textContent = m.id;
+              if (m.id.includes("llama-3.1-8b-instant") || m.id.includes("llama-3.3-70b-versatile")) {
+                opt.selected = true;
+              }
+              select.appendChild(opt);
+            }
+          });
+        } else {
+          select.innerHTML = '<option value="">المفتاح غير صالح أو محظور!</option>';
+        }
+      } catch (e) {
+        select.innerHTML = '<option value="">خطأ في الاتصال</option>';
+      }
+    }
+
+    // جلب القائمة تلقائياً عند فتح الموقع
+    window.onload = fetchModels;
 
     function handleKeyPress(e) {
       if (e.key === 'Enter') {
@@ -84,7 +120,10 @@
 
     async function sendMessage() {
       const apiKey = getApiKey();
-      if (!apiKey) return;
+      if (!apiKey) {
+        alert("يرجى إدخال مفتاح Groq أولاً عن طريق زر 'المفتاح' في الأعلى!");
+        return;
+      }
 
       const input = document.getElementById("user-input");
       const chatContainer = document.getElementById("chat-container");
@@ -92,6 +131,10 @@
       const text = input.value.trim();
 
       if (!text) return;
+      if (!selectedModel) {
+        alert("لم يتم اختيار نموذج شغال، تأكدي من صحة المفتاح!");
+        return;
+      }
 
       chatContainer.innerHTML += `
         <div class="flex gap-3 flex-row-reverse">
