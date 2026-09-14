@@ -22,9 +22,8 @@
       <h1 class="font-bold text-base text-slate-100">Nexus AI</h1>
     </div>
     <select id="model-select" class="bg-slate-950 border border-slate-700 text-slate-200 text-xs rounded-lg px-2 py-1 outline-none">
-      <option value="llama-3.1-8b-instant" selected>Llama 3.1 8B (سريع جداً)</option>
-      <option value="llama-3.3-70b-specdec">Llama 3.3 70B (قوي)</option>
-      <option value="mixtral-8x7b-32768">Mixtral 8x7B</option>
+      <option value="llama-3.1-8b-instant" selected>Llama 3.1 8B (سريع وشغال)</option>
+      <option value="llama-3.3-70b-versatile">Llama 3.3 70B (الأقوى)</option>
     </select>
   </header>
 
@@ -34,7 +33,7 @@
       <div class="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center flex-shrink-0 text-xs">
         <i class="fa-solid fa-robot"></i>
       </div>
-      <p class="text-xs text-slate-300 leading-relaxed">أهلاً بك! يمكنك الآن كتابة أي سؤال أو كود، والتبديل بين النماذج من الأعلى بسهولة.</p>
+      <p class="text-xs text-slate-300 leading-relaxed">أهلاً بك! تم التثبيت المباشر على النماذج المعتمدة حالياً من Groq. يمكنك الكتابة فوراً.</p>
     </div>
   </main>
 
@@ -119,11 +118,11 @@
             </div>
           `;
         } else {
-          showError("خطأ: " + (data.error ? data.error.message : "يرجى اختيار نموذج آخر من الأعلى"));
+          showError("خطأ: " + (data.error ? data.error.message : "حدث خطأ غير متوقع"));
         }
       } catch (err) {
         document.getElementById(loadingId)?.remove();
-        showError("حدث خطأ في الاتصال!");
+        showError("حدث خطأ في الاتصال بالشبكة!");
       }
       window.scrollTo(0, document.body.scrollHeight);
     }
