@@ -13,15 +13,14 @@
     pre { direction: ltr; text-align: left; }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans h-screen flex flex-col justify-between overflow-hidden">
+<body class="bg-slate-950 text-slate-100 font-sans flex flex-col h-screen overflow-hidden">
 
   <!-- Header -->
-  <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur px-4 py-3 flex justify-between items-center z-10">
+  <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur px-4 py-3 flex justify-between items-center shrink-0">
     <div class="flex items-center gap-2">
       <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
       <h1 class="font-bold text-base text-slate-100">Nexus AI</h1>
     </div>
-    <!-- قائمة اختيار النموذج مباشرة من الواجهة -->
     <select id="model-select" class="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded-lg px-2 py-1 outline-none">
       <option value="llama-3.1-8b-instant" selected>Llama 3.1 8B (سريع جداً)</option>
       <option value="llama-3.3-70b-specdec">Llama 3.3 70B (قوي)</option>
@@ -39,12 +38,12 @@
     </div>
   </main>
 
-  <!-- Input Area -->
-  <footer class="p-3 bg-slate-950/90 border-t border-slate-800">
-    <div class="max-w-4xl mx-auto relative flex items-center">
-      <textarea id="user-input" rows="1" placeholder="اكتب رسالتك هنا..." class="w-full bg-slate-900 border border-slate-800 rounded-xl py-3 pr-4 pl-12 text-xs text-slate-100 focus:outline-none focus:border-emerald-500 resize-none" onkeydown="handleKeyPress(event)"></textarea>
-      <button onclick="sendMessage()" class="absolute left-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 w-8 h-8 rounded-lg flex items-center justify-center">
-        <i class="fa-solid fa-arrow-up text-xs"></i>
+  <!-- Input Area (Fixed at bottom) -->
+  <footer class="p-3 bg-slate-900 border-t border-slate-800 shrink-0 w-full">
+    <div class="max-w-4xl mx-auto flex items-center gap-2">
+      <input id="user-input" type="text" placeholder="اكتب رسالتك هنا..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-sm text-slate-100 focus:outline-none focus:border-emerald-500" onkeydown="handleKeyPress(event)">
+      <button onclick="sendMessage()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-4 py-3 rounded-xl font-bold flex items-center justify-center">
+        <i class="fa-solid fa-paper-plane text-sm"></i>
       </button>
     </div>
   </footer>
@@ -53,7 +52,7 @@
     const API_KEY = "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"; 
 
     function handleKeyPress(e) {
-      if (e.key === 'Enter' && !e.shiftKey) {
+      if (e.key === 'Enter') {
         e.preventDefault();
         sendMessage();
       }
