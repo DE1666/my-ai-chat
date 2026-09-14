@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Nexus AI | الشات الذكي</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,15 +13,15 @@
     pre { direction: ltr; text-align: left; }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans flex flex-col h-screen overflow-hidden">
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen pb-20">
 
   <!-- Header -->
-  <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur px-4 py-3 flex justify-between items-center shrink-0">
+  <header class="sticky top-0 border-b border-slate-800 bg-slate-900/90 backdrop-blur px-4 py-3 flex justify-between items-center z-20">
     <div class="flex items-center gap-2">
       <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
       <h1 class="font-bold text-base text-slate-100">Nexus AI</h1>
     </div>
-    <select id="model-select" class="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded-lg px-2 py-1 outline-none">
+    <select id="model-select" class="bg-slate-950 border border-slate-700 text-slate-200 text-xs rounded-lg px-2 py-1 outline-none">
       <option value="llama-3.1-8b-instant" selected>Llama 3.1 8B (سريع جداً)</option>
       <option value="llama-3.3-70b-specdec">Llama 3.3 70B (قوي)</option>
       <option value="mixtral-8x7b-32768">Mixtral 8x7B</option>
@@ -29,7 +29,7 @@
   </header>
 
   <!-- Chat Area -->
-  <main id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-4 max-w-4xl w-full mx-auto">
+  <main id="chat-container" class="p-4 space-y-4 max-w-4xl w-full mx-auto">
     <div class="flex gap-3 bg-slate-900/40 border border-slate-800 p-4 rounded-2xl">
       <div class="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center flex-shrink-0 text-xs">
         <i class="fa-solid fa-robot"></i>
@@ -39,7 +39,7 @@
   </main>
 
   <!-- Input Area (Fixed at bottom) -->
-  <footer class="p-3 bg-slate-900 border-t border-slate-800 shrink-0 w-full">
+  <footer class="fixed bottom-0 left-0 right-0 p-3 bg-slate-900 border-t border-slate-800 z-30">
     <div class="max-w-4xl mx-auto flex items-center gap-2">
       <input id="user-input" type="text" placeholder="اكتب رسالتك هنا..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-sm text-slate-100 focus:outline-none focus:border-emerald-500" onkeydown="handleKeyPress(event)">
       <button onclick="sendMessage()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-4 py-3 rounded-xl font-bold flex items-center justify-center">
@@ -74,7 +74,7 @@
       `;
       
       input.value = "";
-      chatContainer.scrollTop = chatContainer.scrollHeight;
+      window.scrollTo(0, document.body.scrollHeight);
 
       const loadingId = "loading-" + Date.now();
       chatContainer.innerHTML += `
@@ -87,7 +87,7 @@
           </div>
         </div>
       `;
-      chatContainer.scrollTop = chatContainer.scrollHeight;
+      window.scrollTo(0, document.body.scrollHeight);
 
       try {
         const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -125,7 +125,7 @@
         document.getElementById(loadingId)?.remove();
         showError("حدث خطأ في الاتصال!");
       }
-      chatContainer.scrollTop = chatContainer.scrollHeight;
+      window.scrollTo(0, document.body.scrollHeight);
     }
 
     function showError(msg) {
